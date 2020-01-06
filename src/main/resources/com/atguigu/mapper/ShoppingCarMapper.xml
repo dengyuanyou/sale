@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.mapper.ShoppingCarMapper" >
+
+  <resultMap id="BaseResultMap" type="com.atguigu.domain.ShoppingCar" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="sku_name" property="skuName" jdbcType="VARCHAR" />
+    <result column="sku_price" property="skuPrice" jdbcType="DECIMAL" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="total" property="total" jdbcType="DECIMAL" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="product_id" property="productId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
+    <result column="is_check" property="isCheck" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from shopping_car
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <delete id="delect_carts" parameterType="map">
+      delect from shopping_car
+      where id in
+      <foreach collection="list_id" item="id" open="(" separator="," close=")">
+        #{id}
+      </foreach>
+    </delete>
+
+
+    <insert id="insert" parameterType="com.atguigu.domain.ShoppingCar" useGeneratedKeys="true" keyProperty="id" >
+    insert into shopping_car (sku_name, sku_price, number,total, user_id, product_id,create_time, sku_id, image_url,is_check, address)
+    values
+    (#{skuName,jdbcType=VARCHAR}, #{skuPrice,jdbcType=DECIMAL}, #{number,jdbcType=INTEGER},
+    #{total,jdbcType=DECIMAL}, #{userId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER},
+    #{createTime,jdbcType=TIMESTAMP}, #{skuId,jdbcType=INTEGER}, #{imageUrl,jdbcType=VARCHAR},
+    #{isCheck,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="addCart" parameterType="com.atguigu.domain.ShoppingCar" useGeneratedKeys="true" keyProperty="id">
+    insert into shopping_car(sku_name,sku_price,number,total,user_id,product_id,create_time,sku_id,image_url,is_check,address)
+    values
+    (#{skuName,jdbcType=VARCHAR}, #{skuPrice,jdbcType=DECIMAL}, #{number,jdbcType=INTEGER},
+    #{total,jdbcType=DECIMAL}, #{userId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER},
+    #{createTime,jdbcType=TIMESTAMP}, #{skuId,jdbcType=INTEGER}, #{imageUrl,jdbcType=VARCHAR},
+    #{isCheck,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.atguigu.domain.ShoppingCar" >
+    update shopping_car
+    set sku_name = #{skuName,jdbcType=VARCHAR},
+    sku_price = #{skuPrice,jdbcType=DECIMAL},
+    number = #{number,jdbcType=INTEGER},
+    total = #{total,jdbcType=DECIMAL},
+    user_id = #{userId,jdbcType=INTEGER},
+    product_id = #{productId,jdbcType=INTEGER},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    sku_id = #{skuId,jdbcType=INTEGER},
+    image_url = #{imageUrl,jdbcType=VARCHAR},
+    is_check = #{isCheck,jdbcType=VARCHAR},
+    address = #{address,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateCart" parameterType="com.atguigu.domain.ShoppingCar">
+    update shopping_car
+    set sku_name = #{skuName,jdbcType=VARCHAR},
+    sku_price = #{skuPrice,jdbcType=DECIMAL},
+    number = #{number,jdbcType=INTEGER},
+    total = #{total,jdbcType=DECIMAL},
+    user_id = #{userId,jdbcType=INTEGER},
+    product_id = #{productId,jdbcType=INTEGER},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    sku_id = #{skuId,jdbcType=INTEGER},
+    image_url = #{imageUrl,jdbcType=VARCHAR},
+    is_check = #{isCheck,jdbcType=VARCHAR},
+    address = #{address,jdbcType=VARCHAR}
+    where sku_id = #{skuId} and user_id = #{userId}
+  </update>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select Id, sku_name, sku_price, number, total, user_id, product_id, create_time,sku_id, image_url, is_check, address
+    from shopping_car
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select Id, sku_name, sku_price, number, total, user_id, product_id, create_time,sku_id, image_url, is_check, address
+    from shopping_car
+  </select>
+
+  <select id="select_cart_exist" resultType="int" parameterType="com.atguigu.domain.ShoppingCar">
+      select count(1) from shopping_car
+      where sku_id = #{skuId} and user_id = #{userId}
+  </select>
+
+  <select id="select_list_cart_by_user" resultMap="BaseResultMap" parameterType="com.atguigu.domain.User">
+    select Id, sku_name, sku_price, number, total, user_id, product_id, create_time,sku_id, image_url, is_check, address
+    from shopping_car
+    where user_id = #{id}
+  </select>
+
+</mapper>

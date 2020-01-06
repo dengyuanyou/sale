@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.mapper.SkuAttrValueMapper">
+
+    <resultMap id="BaseResultMap" type="com.atguigu.domain.SkuAttrValue">
+        <id column="Id" property="id" jdbcType="INTEGER"/>
+        <result column="attr_id" property="attrId" jdbcType="INTEGER"/>
+        <result column="value_id" property="valueId" jdbcType="INTEGER"/>
+        <result column="product_id" property="productId" jdbcType="INTEGER"/>
+        <result column="is_sku" property="isSku" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="sku_id" property="skuId" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sku_attr_value
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insert" parameterType="com.atguigu.domain.SkuAttrValue" useGeneratedKeys="true" keyProperty="id">
+    insert into sku_attr_value (attr_id, value_id, product_id,is_sku, create_time, sku_id)
+    values (#{attrId,jdbcType=INTEGER}, #{valueId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER},
+      #{isSku,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{skuId,jdbcType=INTEGER})
+  </insert>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="skuAttrValue.id">
+      insert into sku_attr_value (attr_id, value_id, product_id,is_sku, create_time, sku_id)
+      values(#{skuAttrValue.attrId},#{skuAttrValue.valueId},#{productId},#{skuAttrValue.isSku},#{skuAttrValue.createTime}
+      ,#{skuId})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.atguigu.domain.SkuAttrValue">
+    update sku_attr_value
+    set
+    attr_id = #{attrId,jdbcType=INTEGER},
+    value_id = #{valueId,jdbcType=INTEGER},
+    product_id = #{productId,jdbcType=INTEGER},
+    is_sku = #{isSku,jdbcType=VARCHAR},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    sku_id = #{skuId,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select Id, attr_id, value_id, product_id, is_sku, create_time, sku_id
+    from sku_attr_value
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select Id, attr_id, value_id, product_id, is_sku, create_time, sku_id
+    from sku_attr_value
+  </select>
+
+</mapper>

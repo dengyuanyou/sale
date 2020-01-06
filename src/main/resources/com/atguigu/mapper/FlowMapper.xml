@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.mapper.FlowMapper" >
+
+  <resultMap id="BaseResultMap" type="com.atguigu.domain.Flow" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="deliver" property="deliver" jdbcType="VARCHAR" />
+    <result column="deliver_time" property="deliverTime" jdbcType="TIMESTAMP" />
+    <result column="deliver_desc" property="deliverDesc" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="current_place" property="currentPlace" jdbcType="VARCHAR" />
+    <result column="goal_place" property="goalPlace" jdbcType="VARCHAR" />
+    <result column="business" property="business" jdbcType="VARCHAR" />
+    <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from flow
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.atguigu.domain.Flow" useGeneratedKeys="true" keyProperty="id" >
+    insert into flow (deliver, deliver_time, deliver_desc,user_id, create_time, order_id,current_place, goal_place, business,phone_number)
+    values (#{deliver,jdbcType=VARCHAR}, #{deliverTime,jdbcType=TIMESTAMP}, #{deliverDesc,jdbcType=VARCHAR},
+      #{userId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{orderId,jdbcType=INTEGER},
+      #{currentPlace,jdbcType=VARCHAR}, #{goalPlace,jdbcType=VARCHAR}, #{business,jdbcType=VARCHAR},
+      #{phoneNumber,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="insert_flow" useGeneratedKeys="true" keyProperty="flow.id">
+    insert into flow (deliver, deliver_time, deliver_desc,user_id, create_time, order_id,current_place, goal_place, business,phone_number)
+    values (#{flow.deliver}, #{flow.deliverTime}, #{flow.deliverDesc},#{flow.userId}, #{flow.createTime},
+      #{order.id},#{flow.currentPlace}, #{flow.goalPlace}, #{flow.business},#{flow.phoneNumber})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.atguigu.domain.Flow" >
+    update flow
+    set deliver = #{deliver,jdbcType=VARCHAR},
+      deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      deliver_desc = #{deliverDesc,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      order_id = #{orderId,jdbcType=INTEGER},
+      current_place = #{currentPlace,jdbcType=VARCHAR},
+      goal_place = #{goalPlace,jdbcType=VARCHAR},
+      business = #{business,jdbcType=VARCHAR},
+      phone_number = #{phoneNumber,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="update_desc" parameterType="com.atguigu.domain.ObjectFlow">
+    update flow set deliver_time = #{deliverTime},deliver_desc = #{deliverDesc}
+    where id = #{id}
+  </update>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select Id, deliver, deliver_time, deliver_desc, user_id, create_time, order_id, current_place,goal_place, business, phone_number
+    from flow
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select Id, deliver, deliver_time, deliver_desc, user_id, create_time, order_id, current_place,goal_place, business, phone_number
+    from flow
+  </select>
+
+</mapper>

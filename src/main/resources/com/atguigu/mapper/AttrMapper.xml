@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.mapper.AttrMapper">
+
+    <resultMap id="BaseResultMap" type="com.atguigu.domain.Attr">
+        <id column="Id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="enable" property="enable" jdbcType="VARCHAR"/>
+        <result column="class_two_id" property="classTwoId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="ResultMap" type="com.atguigu.domain.ObjectAttr">
+        <id column="Id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="enable" property="enable" jdbcType="VARCHAR"/>
+        <result column="class_two_id" property="classTwoId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <collection property="list_value" ofType="com.atguigu.domain.Value" columnPrefix="v_">
+            <id column="id" property="id"/>
+            <result column="value" property="value"/>
+            <result column="enable" property="enable"/>
+            <result column="attr_id" property="attrId"/>
+            <result column="name" property="name"/>
+            <result column="create_time" property="createTime"/>
+        </collection>
+    </resultMap>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from attr
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insert" parameterType="com.atguigu.domain.Attr" useGeneratedKeys="true" keyProperty="id">
+    insert into attr (name, enable, class_two_id,create_time)
+    values (#{name,jdbcType=VARCHAR}, #{enable,jdbcType=VARCHAR}, #{classTwoId,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+
+    <insert id="saveAttrByClassTwoId" parameterType="com.atguigu.domain.Attr" useGeneratedKeys="true" keyProperty="attr.id">
+        insert into attr(name,enable,class_two_id,create_time)
+        values(#{attr.name},#{attr.enable},#{classTwoId},#{attr.createTime})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.atguigu.domain.Attr">
+    update attr
+    set
+    name = #{name,jdbcType=VARCHAR},
+    enable = #{enable,jdbcType=VARCHAR},
+    class_two_id = #{classTwoId,jdbcType=INTEGER},
+    create_time = #{createTime,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select Id, name, enable, class_two_id, create_time
+    from attr
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select Id, name, enable, class_two_id, create_time
+    from attr
+  </select>
+
+    <select id="findAttrsByClassTwoId" resultMap="ResultMap">
+        select a.id,a.name,a.enable,a.class_two_id,a.create_time,
+        v.id as v_id,v.value as v_value,v.enable as v_enable,v.attr_id as v_attr_id,
+        v.name as v_name,v.create_time as v_create_time
+        from attr a
+        join value v
+        on v.attr_id = a.id
+        where class_two_id = #{classTwoId}
+    </select>
+
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.mapper.ProductImageMapper">
+
+    <resultMap id="BaseResultMap" type="com.atguigu.domain.ProductImage">
+        <id column="Id" property="id" jdbcType="INTEGER"/>
+        <result column="effect" property="effect" jdbcType="VARCHAR"/>
+        <result column="product_id" property="productId" jdbcType="INTEGER"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from product_image
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insert" parameterType="com.atguigu.domain.ProductImage" useGeneratedKeys="true" keyProperty="id">
+    insert into product_image (effect, product_id, url)
+    values (#{effect,jdbcType=VARCHAR}, #{product_id,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR})
+  </insert>
+
+    <insert id="batchInsertImages">
+        insert into product_image(product_id,url)values
+        <foreach collection="imageUrls" separator="," item="url">
+            (#{id},#{url})
+        </foreach>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.atguigu.domain.ProductImage">
+    update product_image
+    set
+    effect = #{effect,jdbcType=VARCHAR},
+    product_id = #{product_id,jdbcType=INTEGER},
+    url = #{url,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select Id, effect, product_id, url
+    from product_image
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select Id, effect, product_id, url
+    from product_image
+  </select>
+
+</mapper>

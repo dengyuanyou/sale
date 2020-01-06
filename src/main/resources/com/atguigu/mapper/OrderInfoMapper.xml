@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.mapper.OrderInfoMapper" >
+
+  <resultMap id="BaseResultMap" type="com.atguigu.domain.OrderInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="sku_id" property="skuId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="sku_name" property="skuName" jdbcType="VARCHAR" />
+    <result column="product_image" property="productImage" jdbcType="VARCHAR" />
+    <result column="sku_price" property="skuPrice" jdbcType="DECIMAL" />
+    <result column="sku_number" property="skuNumber" jdbcType="INTEGER" />
+    <result column="sku_address" property="skuAddress" jdbcType="VARCHAR" />
+    <result column="flow_id" property="flowId" jdbcType="INTEGER" />
+    <result column="shopping_car_id" property="shoppingCarId" jdbcType="INTEGER" />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.atguigu.domain.OrderInfo" useGeneratedKeys="true" keyProperty="id" >
+    insert into order_info (order_id, sku_id, create_time,sku_name, product_image, sku_price,sku_number, sku_address, flow_id,shopping_car_id)
+    values (#{orderId,jdbcType=INTEGER}, #{skuId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{skuName,jdbcType=VARCHAR}, #{productImage,jdbcType=VARCHAR}, #{skuPrice,jdbcType=DECIMAL},
+      #{skuNumber,jdbcType=INTEGER}, #{skuAddress,jdbcType=VARCHAR}, #{flowId,jdbcType=INTEGER},
+      #{shoppingCarId,jdbcType=INTEGER})
+  </insert>
+
+  <insert id="save_list_info">
+    insert into order_info(order_id, sku_id, create_time,sku_name, product_image, sku_price,sku_number, sku_address, flow_id,shopping_car_id)
+
+    <foreach collection="list_info" separator="," item="info">
+      (#{order.id},#{info.skuId},#{info.createTime},#{info.skuName},#{info.productImage},#{info.skuPrice},
+      #{info.skuNumber},#{info.skuAddress},#{flowId},#{info.shoppingCarId})
+    </foreach>
+
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.atguigu.domain.OrderInfo" >
+    update order_info
+    set order_id = #{orderId,jdbcType=INTEGER},
+      sku_id = #{skuId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      sku_name = #{skuName,jdbcType=VARCHAR},
+      product_image = #{productImage,jdbcType=VARCHAR},
+      sku_price = #{skuPrice,jdbcType=DECIMAL},
+      sku_number = #{skuNumber,jdbcType=INTEGER},
+      sku_address = #{skuAddress,jdbcType=VARCHAR},
+      flow_id = #{flowId,jdbcType=INTEGER},
+      shopping_car_id = #{shoppingCarId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, order_id, sku_id, create_time, sku_name, product_image, sku_price, sku_number,sku_address, flow_id, shopping_car_id
+    from order_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, order_id, sku_id, create_time, sku_name, product_image, sku_price, sku_number,sku_address, flow_id, shopping_car_id
+    from order_info
+  </select>
+
+</mapper>

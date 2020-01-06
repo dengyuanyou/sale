@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/jdbc 
+       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:property-placeholder location="classpath:dbConfig.properties,classpath:ws.properties"/>
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${driverClassName}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+    <!--通过spring的FactoryBean的方式来创建ws的bean-->
+    <bean id="loginServer" class="com.atguigu.util.MyWsFactoryBean">
+        <property name="url" value="${login_url}"/>
+        <property name="t" value="com.atguigu.server.ILoginServer"/>
+    </bean>
+
+    <!--通过spring的FactoryBean的方式来创建ws的bean-->
+    <bean id="addressServer" class="com.atguigu.util.MyWsFactoryBean">
+        <property name="url" value="${address_url}"/>
+        <property name="t" value="com.atguigu.server.IAddressServer"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.atguigu.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean"/>
+    </bean>
+
+    <context:component-scan base-package="com.atguigu.service" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+
+    <!--事务管理-->
+    <bean id="manager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--通知增强-->
+    <tx:advice id="txAdvice" transaction-manager="manager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="count*" read-only="true"/>
+            <tx:method name="list*" read-only="true"/>
+            <tx:method name="query*" read-only="true"/>
+            <tx:method name="select*" read-only="true"/>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <!--切入点-->
+        <aop:pointcut id="txPointcut" expression="execution(* com.atguigu.service.impl.*ServiceImpl.*(..))"/>
+        <!--将通知增强加入到切入点中-->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+    </aop:config>
+
+</beans>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.mapper.SkuMapper">
+
+    <resultMap id="BaseResultMap" type="com.atguigu.domain.Sku">
+        <id column="Id" property="id" jdbcType="INTEGER"/>
+        <result column="product_id" property="productId" jdbcType="INTEGER"/>
+        <result column="number" property="number" jdbcType="INTEGER"/>
+        <result column="price" property="price" jdbcType="DOUBLE"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="sku_name" property="skuName" jdbcType="VARCHAR"/>
+        <result column="sku_sales" property="skuSales" jdbcType="INTEGER"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="ResultMap" type="com.atguigu.domain.ObjectSku">
+        <id column="Id" property="id" jdbcType="INTEGER"/>
+        <result column="product_id" property="productId" jdbcType="INTEGER"/>
+        <result column="number" property="number" jdbcType="INTEGER"/>
+        <result column="price" property="price" jdbcType="DOUBLE"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="sku_name" property="skuName" jdbcType="VARCHAR"/>
+        <result column="sku_sales" property="skuSales" jdbcType="INTEGER"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <association property="product" columnPrefix="p_" javaType="com.atguigu.domain.Product">
+            <id column="Id" property="id" jdbcType="INTEGER"/>
+            <result column="name" property="name" jdbcType="VARCHAR"/>
+            <result column="image_url" property="imageUrl" jdbcType="VARCHAR"/>
+            <result column="class_one_id" property="classOneId" jdbcType="INTEGER"/>
+            <result column="class_two_id" property="classTwoId" jdbcType="INTEGER"/>
+            <result column="brand_id" property="brandId" jdbcType="INTEGER"/>
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="descr" property="descr" jdbcType="VARCHAR"/>
+        </association>
+        <association property="brand" columnPrefix="b_" javaType="com.atguigu.domain.Brand">
+            <id column="Id" property="id" jdbcType="INTEGER"/>
+            <result column="name" property="name" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="DetailSkuMap" type="com.atguigu.domain.DetailSku">
+        <id column="Id" property="id" jdbcType="INTEGER"/>
+        <result column="product_id" property="productId" jdbcType="INTEGER"/>
+        <result column="number" property="number" jdbcType="INTEGER"/>
+        <result column="price" property="price" jdbcType="DOUBLE"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="sku_name" property="skuName" jdbcType="VARCHAR"/>
+        <result column="sku_sales" property="skuSales" jdbcType="INTEGER"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <association property="product" columnPrefix="p_" javaType="com.atguigu.domain.Product">
+            <id column="Id" property="id" jdbcType="INTEGER"/>
+            <result column="name" property="name" jdbcType="VARCHAR"/>
+            <result column="image_url" property="imageUrl" jdbcType="VARCHAR"/>
+            <result column="class_one_id" property="classOneId" jdbcType="INTEGER"/>
+            <result column="class_two_id" property="classTwoId" jdbcType="INTEGER"/>
+            <result column="brand_id" property="brandId" jdbcType="INTEGER"/>
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="descr" property="descr" jdbcType="VARCHAR"/>
+        </association>
+        <collection property="list_image" columnPrefix="pi_" ofType="com.atguigu.domain.ProductImage">
+            <id column="Id" property="id"/>
+            <result column="product_id" property="productId"/>
+            <result column="url" property="url"/>
+            <result column="effect" property="effect"/>
+        </collection>
+        <collection property="list_av_name" ofType="com.atguigu.domain.ObjectAv">
+            <result column="a_name" property="attr_name"/>
+            <result column="v_value" property="value_value"/>
+        </collection>
+    </resultMap>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sku
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insert" parameterType="com.atguigu.domain.Sku" useGeneratedKeys="true" keyProperty="id">
+    insert into sku (product_id, number, price, create_time, sku_name, sku_sales, address)
+    values (#{productId,jdbcType=INTEGER}, #{number,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE},
+      #{createTime,jdbcType=TIMESTAMP}, #{skuName,jdbcType=VARCHAR}, #{skuSales,jdbcType=INTEGER},
+      #{address,jdbcType=VARCHAR})
+  </insert>
+
+    <insert id="saveSku" useGeneratedKeys="true" keyProperty="sku.id">
+        insert into sku (product_id, number, price, create_time, sku_name, sku_sales, address)
+        values(#{sku.productId},#{sku.number},#{sku.price},#{sku.createTime},#{sku.skuName},#{sku.skuSales},#{sku.address})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.atguigu.domain.Sku">
+    update sku
+    set
+    product_id = #{productId,jdbcType=INTEGER},
+    number = #{number,jdbcType=INTEGER},
+    price = #{price,jdbcType=DOUBLE},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    sku_name = #{skuName,jdbcType=VARCHAR},
+    sku_sales = #{skuSales,jdbcType=INTEGER},
+    address = #{address,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select Id, product_id, number, price, create_time, sku_name, sku_sales, address
+    from sku
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select Id, product_id, number, price, create_time, sku_name, sku_sales, address
+    from sku
+  </select>
+
+    <select id="select_list_by_attr" parameterType="map" resultMap="ResultMap">
+        select s.id,s.product_id,s.number,s.price,s.create_time,s.sku_name,s.sku_sales,s.address,
+        p.id as p_id,p.name as p_name,p.imag_url as p_image_url,p.class_one_id as p_class_one_id,
+        p.class_two_id as p_class_two_id,p.brand_id as p_brand_id,p.create_time as p_create_time,
+        p.descr as p_descr,
+        b.id as b_id,b.name as b_name
+        from sku s
+        JOIN brand b
+        JOIN product p
+        ON p.brand_id = b.id AND s.product_id = p.id
+        where p.class_two_id = #{classTwoId}
+        ${subSql}
+    </select>
+
+    <select id="select_detail_sku" resultMap="DetailSkuMap">
+        SELECT s.id, s.product_id, s.number, s.price, s.create_time, s.sku_name, s.sku_sales, s.address,
+        sav.id AS sav_id, sav.attr_id AS sav_attr_id, sav.value_id AS sav_value_id, sav.product_id AS sav_product_id, sav.is_sku AS sav_is_sku,
+        sav.create_time AS sav_create_time, sav.sku_id AS sav_sku_id,
+        a.Id AS a_id, a.name AS a_name, a.enable AS a_enable, a.class_two_id AS a_class_two_id, a.create_time AS a_create_time,
+        v.Id AS v_id, CONCAT(v.value,v.name) AS v_value, v.enable AS v_enable, v.attr_id AS v_attr_id,v.create_time AS v_create_time,
+        pi.id AS pi_id,pi.effect AS pi_effect,pi.product_id AS pi_product_id,pi.url AS pi_url,
+        p.Id AS p_id,p.brand_id AS p_brand_id,p.class_one_id AS p_class_one_id,p.class_two_id AS p_class_two_id,p.create_time AS p_create_time,
+        p.descr AS p_descr,p.imag_url AS p_imag_url,p.`name` AS p_name
+        FROM sku s,
+        sku_attr_value sav,
+        attr a,
+        `value` v,
+        product_image pi,
+        product p
+        WHERE p.id = s.product_id
+        AND p.id = pi.product_id
+        AND sav.attr_id = a.id
+        AND sav.value_id = v.id
+        AND sav.sku_id = s.id
+        AND s.id = #{skuId}
+    </select>
+
+    <select id="select_sku_list_by_productId" parameterType="map" resultMap="BaseResultMap">
+        SELECT Id, product_id, number, price, create_time, sku_name, sku_sales, address
+        FROM sku
+        WHERE product_id = #{productId}
+    </select>
+
+    <select id="select_number_by_skuId" resultType="int">
+        select count(1) from sku
+        where id = #{skuId} for update
+    </select>
+
+    <update id="updata_number" parameterType="com.atguigu.domain.OrderInfo">
+        update sku set number = number - #{info.skuNumber} where id = #{info.skuId}
+    </update>
+
+    <select id="select_kc_count" resultType="int" parameterType="com.atguigu.domain.OrderInfo">
+      select count(1) from sku where id = #{info.skuId} and number > 10
+    </select>
+
+    <select id="select_number" resultType="int">
+        select count(1) from sku where id = #{skuId}
+    </select>
+
+</mapper>

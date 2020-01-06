@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.mapper.OrderMapper" >
+
+  <resultMap id="BaseResultMap" type="com.atguigu.domain.Order" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="receive" property="receive" jdbcType="VARCHAR" />
+    <result column="total_amout" property="totalAmout" jdbcType="DECIMAL" />
+    <result column="schedule_id" property="scheduleId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="plane_time" property="planeTime" jdbcType="TIMESTAMP" />
+    <result column="address_id" property="addressId" jdbcType="INTEGER" />
+    <result column="address_name" property="addressName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.atguigu.domain.Order" useGeneratedKeys="true" keyProperty="id" >
+    insert into order (receive, total_amout, schedule_id,user_id, create_time, plane_time,address_id, address_name)
+    values (#{receive,jdbcType=VARCHAR}, #{totalAmout,jdbcType=DECIMAL}, #{scheduleId,jdbcType=INTEGER},
+      #{userId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{planeTime,jdbcType=TIMESTAMP},
+      #{addressId,jdbcType=INTEGER}, #{addressName,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="save_order" useGeneratedKeys="true" keyProperty="order.id">
+    insert into order (receive, total_amout, schedule_id,user_id, create_time, plane_time,address_id, address_name)
+    values (#{order.receive}, #{order.totalAmout}, #{order.scheduleId},#{order.userId},
+    #{order.createTime}, #{order.planeTime},#{addr.id}, #{addr.userAddress})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.atguigu.domain.Order" >
+    update order
+    set receive = #{receive,jdbcType=VARCHAR},
+      total_amout = #{totalAmout,jdbcType=DECIMAL},
+      schedule_id = #{scheduleId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      plane_time = #{planeTime,jdbcType=TIMESTAMP},
+      address_id = #{addressId,jdbcType=INTEGER},
+      address_name = #{addressName,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="update_order" parameterType="com.atguigu.domain.ObjectOrder">
+    update order set schedule_id = #{scheduleId},plane_time = #{planeTime}
+    where id = #{id}
+  </update>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select Id, receive, total_amout, schedule_id, user_id, create_time, plane_time, address_id,address_name
+    from order
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select Id, receive, total_amout, schedule_id, user_id, create_time, plane_time, address_id,address_name
+    from order
+  </select>
+
+</mapper>

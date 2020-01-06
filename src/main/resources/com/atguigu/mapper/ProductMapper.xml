@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.mapper.ProductMapper">
+
+    <resultMap id="BaseResultMap" type="com.atguigu.domain.Product">
+        <id column="Id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="imag_url" property="imageUrl" jdbcType="VARCHAR"/>
+        <result column="class_one_id" property="classOneId" jdbcType="INTEGER"/>
+        <result column="class_two_id" property="classTwoId" jdbcType="INTEGER"/>
+        <result column="brand_id" property="brandId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="desc" property="descr" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="ResultMap" type="com.atguigu.domain.ObjectSku">
+        <id column="Id" property="id" jdbcType="INTEGER"/>
+        <result column="product_id" property="productId" jdbcType="INTEGER"/>
+        <result column="number" property="number" jdbcType="INTEGER"/>
+        <result column="price" property="price" jdbcType="DOUBLE"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="sku_name" property="skuName" jdbcType="VARCHAR"/>
+        <result column="sku_sales" property="skuSales" jdbcType="INTEGER"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <association property="product" columnPrefix="p_" javaType="com.atguigu.domain.Product">
+            <id column="Id" property="id" jdbcType="INTEGER"/>
+            <result column="name" property="name" jdbcType="VARCHAR"/>
+            <result column="image_url" property="imageUrl" jdbcType="VARCHAR"/>
+            <result column="class_one_id" property="classOneId" jdbcType="INTEGER"/>
+            <result column="class_two_id" property="classTwoId" jdbcType="INTEGER"/>
+            <result column="brand_id" property="brandId" jdbcType="INTEGER"/>
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="descr" property="descr" jdbcType="VARCHAR"/>
+        </association>
+        <association property="brand" columnPrefix="b_" javaType="com.atguigu.domain.Brand">
+            <id column="Id" property="id" jdbcType="INTEGER"/>
+            <result column="name" property="name" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from product
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insert" parameterType="com.atguigu.domain.Product" useGeneratedKeys="true" keyProperty="id">
+    insert into product (name, imag_url, class_one_id,class_two_id, brand_id, create_time,descr)
+    values (#{name,jdbcType=VARCHAR}, #{imageUrl,jdbcType=VARCHAR}, #{classOneId,jdbcType=INTEGER},
+    #{classTwoId,jdbcType=INTEGER}, #{brandId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+    #{descr,jdbcType=VARCHAR})
+  </insert>
+
+    <insert id="save" parameterType="com.atguigu.domain.Product" useGeneratedKeys="true" keyProperty="id">
+        insert into product(name, imag_url, class_one_id,class_two_id, brand_id, create_time,descr)
+        values(#{name},#{imageUrl},#{classOneId},#{classTwoId},#{brandId},#{createTime},#{descr})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.atguigu.domain.Product">
+    update product set
+      name = #{name,jdbcType=VARCHAR},
+      imag_url = #{imageUrl,jdbcType=VARCHAR},
+      class_one_id = #{classOneId,jdbcType=INTEGER},
+      class_two_id = #{classTwoId,jdbcType=INTEGER},
+      brand_id = #{brandId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      descr = #{descr,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select Id, name, imag_url, class_one_id, class_two_id, brand_id, create_time, descr
+    from product
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select Id, name, imag_url, class_one_id, class_two_id, brand_id, create_time, descr
+    from product
+  </select>
+
+    <select id="findByBrandIdAndClassTwoId" resultMap="BaseResultMap">
+        select id,name,imag_url,class_one_id,class_two_id,brand_id,create_time,descr
+        from product
+        where brand_id = #{brandId} and class_two_id = #{classTwoId}
+    </select>
+
+    <select id="findObjectSkuByClassTwoId" resultMap="ResultMap">
+        select s.id,s.product_id,s.number,s.price,s.create_time,s.sku_name,s.sku_sales,s.address,
+        p.id as p_id,p.name as p_name,p.imag_url as p_image_url,p.class_one_id as p_class_one_id,
+        p.class_two_id as p_class_two_id,p.brand_id as p_brand_id,p.create_time as p_create_time,
+        p.descr as p_descr,
+        b.id as b_id,b.name as b_name
+        from sku s
+        JOIN brand b
+        JOIN product p
+        ON p.brand_id = b.id AND s.product_id = p.id
+        where p.class_two_id = #{classTwoId}
+    </select>
+
+</mapper>
